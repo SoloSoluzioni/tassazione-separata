@@ -6,85 +6,43 @@
   <title>Calcolatore Tassazione Separata – IRPEF</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      color: #1a1a1a;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem; }
     .container { width: 100%; max-width: 540px; }
     header { text-align: center; margin-bottom: 1.5rem; }
     header h1 { font-size: 20px; font-weight: 700; color: #C00000; margin-bottom: 4px; }
     header p { font-size: 13px; color: #666; }
-    .card {
-      background: #fff;
-      border-radius: 10px;
-      border: 1px solid #e0e0e0;
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .card-title { font-size: 13px; color: #888; margin-bottom: 1.2rem; }
+    .card { background: #fff; border-radius: 10px; border: 1px solid #e0e0e0; padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-size: 13px; color: #888; margin-bottom: 1.2rem; line-height: 1.5; }
     .year-block { margin-bottom: 1.1rem; }
-    .year-label {
-      font-size: 13px; font-weight: 700; color: #1a1a1a;
-      margin-bottom: 8px; padding-bottom: 6px;
-      border-bottom: 1px solid #eee;
-    }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .year-label { font-size: 13px; font-weight: 700; color: #1a1a1a; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #eee; }
     .field label { display: block; font-size: 12px; color: #666; margin-bottom: 4px; }
-    .field input {
-      width: 100%; font-size: 14px;
-      padding: 8px 10px;
-      border: 1px solid #ccc; border-radius: 6px;
-      background: #fafafa; color: #1a1a1a; outline: none;
-      transition: border-color 0.15s;
-    }
+    .field input { width: 100%; font-size: 14px; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; background: #fafafa; color: #1a1a1a; outline: none; transition: border-color 0.15s; }
     .field input:focus { border-color: #C00000; }
-    .sep-field { margin-top: 0.75rem; }
+    .computed { display: none; font-size: 12px; color: #555; margin-top: 6px; padding: 5px 10px; background: #f0f4ff; border-radius: 6px; border: 1px solid #d0d8f0; }
+    .computed span { font-weight: 700; color: #1a1a1a; }
+    .scaglioni-info { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 1rem; }
+    .sc-pill { font-size: 11px; padding: 3px 10px; border-radius: 20px; }
+    .sc-1 { background: #e6f4d7; color: #2d6a0a; }
+    .sc-2 { background: #fff0d6; color: #7a4a00; }
+    .sc-3 { background: #fde8e8; color: #8b1a1a; }
+    .sep-field { margin-top: 1rem; }
     .sep-field label { display: block; font-size: 13px; color: #666; margin-bottom: 4px; }
-    .sep-field input {
-      width: 100%; font-size: 14px;
-      padding: 8px 10px;
-      border: 1px solid #ccc; border-radius: 6px;
-      background: #fafafa; color: #1a1a1a; outline: none;
-      transition: border-color 0.15s;
-    }
+    .sep-field input { width: 100%; font-size: 14px; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; background: #fafafa; color: #1a1a1a; outline: none; transition: border-color 0.15s; }
     .sep-field input:focus { border-color: #C00000; }
     .sep-field .hint { font-size: 11px; color: #aaa; margin-top: 3px; }
+    #result-section { display: none; }
     .result-box { background: #f8f8f8; border-radius: 8px; padding: 1.1rem 1.25rem; }
-    .rrow {
-      display: flex; justify-content: space-between; align-items: baseline;
-      padding: 5px 0; border-bottom: 1px solid #ebebeb; font-size: 13px;
-    }
+    .rrow { display: flex; justify-content: space-between; align-items: baseline; padding: 5px 0; border-bottom: 1px solid #ebebeb; font-size: 13px; }
     .rrow:last-child { border-bottom: none; }
     .rrow .lbl { color: #777; }
     .rrow .val { font-weight: 600; color: #1a1a1a; }
-    .aliq-row {
-      margin-top: 1rem; padding-top: 1rem;
-      border-top: 1px solid #ddd;
-      display: flex; justify-content: space-between; align-items: center;
-    }
+    .aliq-row { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; }
     .aliq-row .lbl { font-size: 14px; font-weight: 600; color: #1a1a1a; }
     .aliq-val { font-size: 28px; font-weight: 700; color: #C00000; }
-    .imposta-block {
-      margin-top: 0.75rem; padding: 0.75rem 1rem;
-      background: #fff8e1; border-radius: 8px;
-      border: 1px solid #ffe082;
-      display: flex; justify-content: space-between; align-items: center;
-    }
+    .imposta-block { display: none; margin-top: 0.75rem; padding: 0.75rem 1rem; background: #fff8e1; border-radius: 8px; border: 1px solid #ffe082; justify-content: space-between; align-items: center; }
     .imposta-block .lbl { font-size: 13px; color: #6d4c00; }
     .imposta-block .val { font-size: 20px; font-weight: 700; color: #6d4c00; }
-    .formula {
-      font-size: 11px; color: #aaa;
-      margin-top: 0.75rem; line-height: 1.7;
-      font-family: 'Courier New', monospace;
-    }
-    #result-section { display: none; }
-    #imposta-block { display: none; }
+    .formula { font-size: 11px; color: #aaa; margin-top: 0.75rem; line-height: 1.7; font-family: 'Courier New', monospace; }
     footer { font-size: 11px; color: #bbb; text-align: center; margin-top: 0.5rem; line-height: 1.6; }
   </style>
 </head>
@@ -94,127 +52,90 @@
     <h1>Tassazione Separata – Aliquota IRPEF</h1>
     <p>Calcolo ai sensi dell'art. 17–21 TUIR · aliquota media biennio precedente</p>
   </header>
-
   <div class="card">
-    <p class="card-title">Dati del biennio precedente all'anno di erogazione degli arretrati</p>
-
+    <p class="card-title">Inserisci solo il reddito complessivo per ciascun anno — l'imposta lorda viene calcolata automaticamente con gli scaglioni IRPEF vigenti</p>
     <div class="year-block">
       <div class="year-label" id="lbl_n1">Anno N-1</div>
-      <div class="row2">
-        <div class="field">
-          <label>Reddito complessivo (€)</label>
-          <input type="text" id="r1" placeholder="es. 29.000,00" oninput="calcola()">
-        </div>
-        <div class="field">
-          <label>Imposta lorda (€)</label>
-          <input type="text" id="i1" placeholder="es. 7.047,00" oninput="calcola()">
-        </div>
+      <div class="field">
+        <label>Reddito complessivo (€)</label>
+        <input type="text" id="r1" placeholder="es. 29.000,00" oninput="calcola()">
       </div>
+      <div class="computed" id="c1">Imposta lorda calcolata: <span id="ci1">—</span></div>
     </div>
-
     <div class="year-block">
       <div class="year-label" id="lbl_n2">Anno N-2</div>
-      <div class="row2">
-        <div class="field">
-          <label>Reddito complessivo (€)</label>
-          <input type="text" id="r2" placeholder="es. 28.000,00" oninput="calcola()">
-        </div>
-        <div class="field">
-          <label>Imposta lorda (€)</label>
-          <input type="text" id="i2" placeholder="es. 6.720,00" oninput="calcola()">
-        </div>
+      <div class="field">
+        <label>Reddito complessivo (€)</label>
+        <input type="text" id="r2" placeholder="es. 28.000,00" oninput="calcola()">
       </div>
+      <div class="computed" id="c2">Imposta lorda calcolata: <span id="ci2">—</span></div>
     </div>
-
+    <div class="scaglioni-info">
+      <span class="sc-pill sc-1">fino a €28.000 → 23%</span>
+      <span class="sc-pill sc-2">€28.001 – €50.000 → 35%</span>
+      <span class="sc-pill sc-3">oltre €50.000 → 43%</span>
+    </div>
     <div class="sep-field">
       <label>Importo arretrati da tassare (€) — <em>opzionale</em></label>
       <input type="text" id="arr" placeholder="es. 3.000,00" oninput="calcola()">
       <div class="hint">Se compilato, calcola anche l'imposta da applicare sugli arretrati</div>
     </div>
   </div>
-
   <div class="card" id="result-section">
     <div class="result-box">
-      <div class="rrow">
-        <span class="lbl">Totale redditi biennio</span>
-        <span class="val" id="tot_r">—</span>
-      </div>
-      <div class="rrow">
-        <span class="lbl">Totale imposte lorde biennio</span>
-        <span class="val" id="tot_i">—</span>
-      </div>
+      <div class="rrow"><span class="lbl">Totale redditi biennio</span><span class="val" id="tot_r">—</span></div>
+      <div class="rrow"><span class="lbl">Totale imposte lorde biennio</span><span class="val" id="tot_i">—</span></div>
       <div class="aliq-row">
         <span class="lbl">Aliquota media tassazione separata</span>
         <span class="aliq-val" id="aliq_val">—</span>
       </div>
     </div>
-
     <div class="imposta-block" id="imposta-block">
       <span class="lbl">Imposta sugli arretrati</span>
       <span class="val" id="imp_arr">—</span>
     </div>
-
     <p class="formula" id="formula_txt"></p>
   </div>
-
   <footer>
-    Art. 17–21 TUIR · Solo per uso informativo<br>
+    Art. 17–21 TUIR · Scaglioni IRPEF vigenti · Solo per uso informativo<br>
     Filt CGIL Piemonte – Segreteria Ferrovieri
   </footer>
 </div>
-
 <script>
   var anno = new Date().getFullYear();
   document.getElementById('lbl_n1').textContent = 'Anno ' + (anno - 1);
   document.getElementById('lbl_n2').textContent = 'Anno ' + (anno - 2);
-
   function parseN(s) {
     if (!s || s.trim() === '') return null;
     var n = parseFloat(s.replace(/\./g, '').replace(',', '.'));
     return isNaN(n) ? null : n;
   }
-  function fmt(n) {
-    return '€ ' + n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function fmt(n) { return '€ ' + n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtPct(n) { return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%'; }
+  function impostaLorda(r) {
+    if (r <= 0) return 0;
+    if (r <= 28000) return r * 0.23;
+    if (r <= 50000) return 28000 * 0.23 + (r - 28000) * 0.35;
+    return 28000 * 0.23 + 22000 * 0.35 + (r - 50000) * 0.43;
   }
-  function fmtPct(n) {
-    return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + '%';
-  }
-
   function calcola() {
     var r1 = parseN(document.getElementById('r1').value);
-    var i1 = parseN(document.getElementById('i1').value);
     var r2 = parseN(document.getElementById('r2').value);
-    var i2 = parseN(document.getElementById('i2').value);
     var arr = parseN(document.getElementById('arr').value);
-
-    if (r1 === null || i1 === null || r2 === null || i2 === null) {
-      document.getElementById('result-section').style.display = 'none';
-      return;
-    }
-    var totR = r1 + r2;
-    var totI = i1 + i2;
-    if (totR === 0) {
-      document.getElementById('result-section').style.display = 'none';
-      return;
-    }
-
+    var c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
+    if (r1 !== null) { document.getElementById('ci1').textContent = fmt(impostaLorda(r1)); c1.style.display = 'block'; } else { c1.style.display = 'none'; }
+    if (r2 !== null) { document.getElementById('ci2').textContent = fmt(impostaLorda(r2)); c2.style.display = 'block'; } else { c2.style.display = 'none'; }
+    if (r1 === null || r2 === null) { document.getElementById('result-section').style.display = 'none'; return; }
+    var i1 = impostaLorda(r1), i2 = impostaLorda(r2);
+    var totR = r1 + r2, totI = i1 + i2;
+    if (totR === 0) { document.getElementById('result-section').style.display = 'none'; return; }
     var aliq = (totI / totR) * 100;
-
     document.getElementById('tot_r').textContent = fmt(totR);
     document.getElementById('tot_i').textContent = fmt(totI);
     document.getElementById('aliq_val').textContent = fmtPct(aliq);
-    document.getElementById('formula_txt').textContent =
-      totI.toLocaleString('it-IT', { minimumFractionDigits: 2 }) + ' ÷ ' +
-      totR.toLocaleString('it-IT', { minimumFractionDigits: 2 }) + ' × 100 = ' + fmtPct(aliq);
-
-    if (arr !== null && arr > 0) {
-      var imp = arr * aliq / 100;
-      document.getElementById('imp_arr').textContent = fmt(imp);
-      document.getElementById('imposta-block').style.display = 'flex';
-    } else {
-      document.getElementById('imposta-block').style.display = 'none';
-    }
-
+    document.getElementById('formula_txt').textContent = totI.toLocaleString('it-IT',{minimumFractionDigits:2}) + ' ÷ ' + totR.toLocaleString('it-IT',{minimumFractionDigits:2}) + ' × 100 = ' + fmtPct(aliq);
+    var ibk = document.getElementById('imposta-block');
+    if (arr !== null && arr > 0) { document.getElementById('imp_arr').textContent = fmt(arr * aliq / 100); ibk.style.display = 'flex'; } else { ibk.style.display = 'none'; }
     document.getElementById('result-section').style.display = 'block';
   }
 </script>
